@@ -1,2 +1,2 @@
-# shim so 'uvicorn main:app' still works if Railway ignores Procfile
+# lets 'uvicorn main:app' still work if some platform ignores the Procfile
 from app.main import app
