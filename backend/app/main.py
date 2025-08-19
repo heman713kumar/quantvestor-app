@@ -6,9 +6,9 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Absolute imports (more reliable in Railway deployments)
-from utils.yahoo_scraper import scrape_yahoo_data
-from utils.valuation_model import calculate_intrinsic_value
-from utils.sentiment_analysis import analyze_sentiment
+from app.utils.yahoo_scraper import scrape_yahoo_data
+from app.utils.valuation_model import calculate_intrinsic_value
+from app.utils.sentiment_analysis import analyze_sentiment
 
 app = FastAPI()
 
