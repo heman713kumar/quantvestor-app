@@ -7,12 +7,11 @@ from app.utils.yahoo_scraper import scrape_yahoo_data
 from app.utils.valuation_model import calculate_all_valuations
 from app.utils.sentiment_analysis import analyze_sentiment
 
-app = FastAPI()
+app = FastAPI(title="QuantVestor API")
 
-# CORS for frontend (open; restrict if needed)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # tighten for prod
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,32 +26,36 @@ class SentimentRequest(BaseModel):
 class BulkValuationRequest(BaseModel):
     urls: List[str]
 
-@app.post("/valuation")
-async def get_valuation(data: ValuationRequest):
-    try:
-        stock_data = scrape_yahoo_data(data.url)
-        valuation = calculate_all_valuations(stock_data)
-        return { "success": True, "data": valuation }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.get("/")
+def root():
+    return {"ok": True, "service": "quantvestor-backend"}
 
-@app.post("/sentiment")
-async def get_sentiment(data: SentimentRequest):
+@app.post("/valuation")
+def valuation(data: ValuationRequest):
     try:
-        sentiment_data = analyze_sentiment(data.query)
-        return { "success": True, "data": sentiment_data }
+        stock = scrape_yahoo_data(data.url)
+        vals = calculate_all_valuations(stock)
+        return {"success": True, "data": vals}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/bulk-valuation")
-async def bulk_valuation(data: BulkValuationRequest):
+def bulk_valuation(data: BulkValuationRequest):
     try:
-        results: Dict[str, Dict] = {}
-        for url in data.urls:
-            sd = scrape_yahoo_data(url)
-            val = calculate_all_valuations(sd)
-            ticker = url.rstrip("/").split("/")[-1].split("?")[0].upper()
-            results[ticker] = val
-        return { "success": True, "data": results }
+        result: Dict[str, Dict] = {}
+        for u in data.urls:
+            stock = scrape_yahoo_data(u)
+            vals = calculate_all_valuations(stock)
+            key = stock["ticker"].upper()
+            result[key] = vals
+        return {"success": True, "data": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/sentiment")
+def sentiment(data: SentimentRequest):
+    try:
+        res = analyze_sentiment(data.query)
+        return {"success": True, "data": res}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
