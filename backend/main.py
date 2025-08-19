@@ -1,10 +1,18 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import re
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+# Absolute imports (more reliable in Railway deployments)
+from utils.yahoo_scraper import scrape_yahoo_data
+from utils.valuation_model import calculate_intrinsic_value
+from utils.sentiment_analysis import analyze_sentiment
 
 app = FastAPI()
 
-ALLOWED_ORIGINS = ["*"]  # lock down later to your Netlify domain
+ALLOWED_ORIGINS = ["*"]  # TODO: Lock this to Netlify domain before production
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -14,7 +22,6 @@ app.add_middleware(
 )
 
 def parse_ticker(url: str) -> str:
-    # works for https://finance.yahoo.com/quote/EMUDHRA.NS
     m = re.search(r"/quote/([A-Za-z0-9\.\-:_]+)", url)
     return m.group(1) if m else "UNKNOWN"
 
@@ -25,7 +32,8 @@ def health():
 @app.get("/valuation")
 def valuation(url: str = Query(...)):
     ticker = parse_ticker(url)
-    # TODO: replace with real scraping & your models
+
+    # Placeholder values — replace with real logic using the imported functions
     return {
         "ticker": ticker,
         "valuations": [
