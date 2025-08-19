@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react'
 
 const API = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'
@@ -24,8 +25,14 @@ export default function App() {
       setLoading(false)
     }
   }
+=======
 
+import React from 'react';
+>>>>>>> 739124e (Frontend wired to backend; tailwind + env; clean structure)
+
+function App() {
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow p-6 space-y-4">
         <h1 className="text-2xl font-bold">QuantVestor Frontend ✅</h1>
@@ -70,6 +77,13 @@ export default function App() {
           Using API base: <code>{API}</code>
         </p>
       </div>
+=======
+    <div className="p-4 text-center">
+      <h1 className="text-2xl font-bold text-green-700">Welcome to QuantVestor 📊</h1>
+      <p className="mt-2 text-gray-600">Your personal stock analysis dashboard.</p>
+>>>>>>> 739124e (Frontend wired to backend; tailwind + env; clean structure)
     </div>
   )
 }
+
+export default App;
