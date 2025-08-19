@@ -1,7 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 beautifulsoup4
 requests
 pydantic
 textblob
 transformers
+python-dotenv
